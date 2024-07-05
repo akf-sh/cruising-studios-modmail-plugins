@@ -84,6 +84,23 @@ class ClaimThread(commands.Cog):
     async def overridereply(self, ctx, *, msg: str=""):
         """Allow mods to bypass claim thread check in reply"""
         await ctx.invoke(self.bot.get_command('reply'), msg=msg)
+        
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
+    @checks.thread_only()
+    @commands.command()
+    async def claims(self, ctx):
+        """List all claims on the current thread"""
+        thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
+        if thread:
+            claimers = thread.get('claimers', [])
+            if claimers:
+                claimers_list = "\n".join(claimers)
+                await ctx.send(f'Current claims on this thread:\n{claimers_list}')
+            else:
+                await ctx.send(f'There are currently no claims on this thread.')
+        else:
+            await ctx.send(f'There are currently no claims on this thread.')
+
 
 
 async def check_reply(ctx):
