@@ -94,12 +94,14 @@ class ClaimThread(commands.Cog):
         if thread:
             claimers = thread.get('claimers', [])
             if claimers:
-                claimers_list = "\n".join(claimers)
+                claimers_formatted = [f'<@{claimer}>' for claimer in claimers]
+                claimers_list = "\n".join(claimers_formatted)
                 await ctx.send(f'Current claims on this thread:\n{claimers_list}')
             else:
                 await ctx.send(f'There are currently no claims on this thread.')
         else:
             await ctx.send(f'There are currently no claims on this thread.')
+
 
 
 
