@@ -23,7 +23,7 @@ class ClaimThread(commands.Cog):
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread is None:
             await self.db.insert_one({'thread_id': str(ctx.thread.channel.id), 'claimers': [str(ctx.author.id)]})
-            await ctx.send('Claimed')
+            await ctx.send(f'<@{str(ctx.author.id)}> you have successfully claimed this thread.')
         else:
             if len(thread['claimers']) <= 0:
                 await self.db.update_one({
@@ -33,6 +33,8 @@ class ClaimThread(commands.Cog):
                         'claimers': [str(ctx.author.id)]
                     }
                 })
+                await ctx.send(f'<@{str(ctx.author.id)}> you have successfully claimed this thread.')
+
             else:
                 await ctx.send('Thread is already claimed')
 
