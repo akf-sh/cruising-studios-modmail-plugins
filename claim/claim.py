@@ -29,7 +29,9 @@ class ClaimThread(commands.Cog):
                 await self.db.update_one({
                     'thread_id': str(ctx.thread.channel.id)
                 }, {
-                    'claimers': [str(ctx.author.id)]
+                    '$set': {
+                        'claimers': [str(ctx.author.id)]
+                    }
                 })
             else:
                 await ctx.send('Thread is already claimed')
