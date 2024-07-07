@@ -46,7 +46,7 @@ class ClaimThread(commands.Cog):
         if thread is None:
             await ctx.send(f'<@{str(ctx.author.id)}>, there is no claim on this thread.')
         else:
-            if len(thread['claimers']) > 0 and ctx.author.id in thread['claimers']:
+            if len(thread['claimers']) > 0 and str(ctx.author.id) in thread['claimers']:
                 await self.db.update_one({
                     'thread_id': str(ctx.thread.channel.id)
                 }, {
