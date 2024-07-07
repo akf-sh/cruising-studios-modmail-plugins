@@ -107,7 +107,7 @@ class ClaimThread(commands.Cog):
 
 async def check_reply(ctx):
     thread = await ctx.bot.get_cog('ClaimThread').db.find_one({'thread_id': str(ctx.thread.channel.id)})
-    if thread:
+    if thread and len(thread['claimers']) > 0:
         return ctx.author.bot or str(ctx.author.id) in thread['claimers']
     return True
 
