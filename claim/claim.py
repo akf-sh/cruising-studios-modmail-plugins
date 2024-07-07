@@ -25,7 +25,7 @@ class ClaimThread(commands.Cog):
             await self.db.insert_one({'thread_id': str(ctx.thread.channel.id), 'claimers': [str(ctx.author.id)]})
             await ctx.send(f'<@{str(ctx.author.id)}> you have successfully claimed this thread.')
         else:
-            if len(thread['claimers']) <= 0:
+            if len(thread['claimers']) == 0:
                 await self.db.update_one({
                     'thread_id': str(ctx.thread.channel.id)
                 }, {
@@ -37,6 +37,28 @@ class ClaimThread(commands.Cog):
 
             else:
                 await ctx.send('Thread is already claimed')
+
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
+    @checks.thread_only()
+    @commands.command()
+    async def unclaim(self, ctx):
+        thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
+        if thread is None:
+            await ctx.send(f'<@{str(ctx.author.id)}>, there is no claim on this thread.')
+        else:
+            if len(thread['claimers']) > 0 and ctx.author.id in thread['claimers']:
+                await self.db.update_one({
+                    'thread_id': str(ctx.thread.channel.id)
+                }, {
+                    '$pull': {
+                        'claimers': str(ctx.author.id)
+                    }
+                })
+                await ctx.send(f'<@{str(ctx.author.id)}> you have successfully unclaimed this thread.')
+
+            else:
+                await ctx.send(f'<@{str(ctx.author.id)}>, you have no claim on this thread.')
+                
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @checks.thread_only()
